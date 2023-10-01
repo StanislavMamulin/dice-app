@@ -4,36 +4,43 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 
 /**
  * This activity allows the user to roll a dice and view the result
  * on the screen.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val rollButton: Button = findViewById(R.id.button)
-        rollButton.setOnClickListener { rollDice() }
+        // Create new Dices object with 6 sides
+        val dice1 = Dice(6)
+        val dice2 = Dice(6)
 
-        rollDice()
+        // Find dices' ImageView in the layout
+        val dice1Image: ImageView = findViewById(R.id.dice1ImageView)
+        val dice2Image: ImageView = findViewById(R.id.dice2ImageView)
+
+        val rollButton: Button = findViewById(R.id.button)
+        rollButton.setOnClickListener {
+            rollDice(dice1, dice1Image)
+            rollDice(dice2, dice2Image)
+        }
+
+        rollDice(dice1, dice1Image)
+        rollDice(dice2, dice2Image)
     }
 
     /**
      * Roll the dice and update the screen with the result.
      */
-    private fun rollDice() {
-        // Create new Dice object with 6 sides and roll the dice
-        val dice = Dice(6)
+    private fun rollDice(dice: Dice, diceImage: ImageView) {
         val diceRoll = dice.roll()
+        setDiceImage(diceRoll, diceImage)
+    }
 
-        Toast.makeText(this, "Dice rolled!", Toast.LENGTH_SHORT).show()
-
-        // Find the ImageView in the layout
-        val diceImage: ImageView = findViewById(R.id.imageView)
-
+    private fun setDiceImage (diceRoll: Int, diceImageView: ImageView) {
         // Determine which drawable resource ID to use based on the dice roll
         val drawableResource = when (diceRoll) {
             1 -> R.drawable.dice_1
@@ -45,10 +52,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Update the ImageView with the correct drawable resource ID
-        diceImage.setImageResource(drawableResource)
+        diceImageView.setImageResource(drawableResource)
 
         // Update the content description
-        diceImage.contentDescription = diceRoll.toString()
+        diceImageView.contentDescription = diceRoll.toString()
     }
 }
 
